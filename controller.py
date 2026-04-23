@@ -53,7 +53,7 @@ class AdvancedMonitor(app_manager.RyuApp):
         # Pre-install drop rule for h3 before any packet arrives
         block_match = parser.OFPMatch(eth_src=BLOCKED_MAC)
         self.add_flow(dp, 100, block_match, [])  # empty actions = DROP
-        print(f"🚫 Drop rule pre-installed for {BLOCKED_MAC}")
+        print(f"Drop rule pre-installed for {BLOCKED_MAC}")
 
     def add_flow(self, dp, priority, match, actions):
         parser = dp.ofproto_parser
@@ -89,15 +89,15 @@ class AdvancedMonitor(app_manager.RyuApp):
         src = eth.src
         in_port = msg.match['in_port']
 
-        # 🚫 Drop any h3 packet that still reaches controller
+        # Drop any h3 packet that still reaches controller
         if src == BLOCKED_MAC:
-            print("🚫 BLOCKED: h3 and h4 traffic")
+            print("BLOCKED: h3 and h4 traffic")
             return
 
-        # ✅ Learn MAC
+        # Learn MAC
         self.mac_to_port[dpid][src] = in_port
 
-        # ✅ Forwarding
+        # Forwarding
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
         else:
